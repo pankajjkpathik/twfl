@@ -1,0 +1,111 @@
+{
+  "project_name": "The Women",
+  "domain": "E-Commerce",
+  "app_type": "ecommerce",
+  "theme": "LIGHT",
+  "archetype": "5 (Jewel & Luxury) mixed with 1 (Organic & Earthy)",
+  "emotional_tone": "Premium, Graceful, Cultural, Minimal, Exclusive",
+  "colors": {
+    "background": {
+      "primary": "#FAF9F6",
+      "secondary": "#F3EFE9",
+      "tertiary": "#EBE5DF"
+    },
+    "text": {
+      "primary": "#1A1412",
+      "secondary": "#4A3F3A",
+      "accent": "#6B1724",
+      "inverse": "#FAF9F6"
+    },
+    "brand": {
+      "primary": "#6B1724",
+      "primary_hover": "#800000",
+      "secondary": "#D4AF37",
+      "secondary_hover": "#C5A059"
+    },
+    "surfaces": {
+      "card": "#FFFFFF",
+      "border": "#E5DCD3",
+      "error": "#9E2A2B",
+      "success": "#2D6A4F"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "heading": "Cormorant Garamond, serif",
+      "body": "Outfit, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "scales": {
+      "h1": "text-5xl sm:text-6xl tracking-tight leading-none font-light",
+      "h2": "text-3xl sm:text-4xl tracking-tight leading-snug font-normal",
+      "h3": "text-2xl sm:text-3xl tracking-tight font-normal",
+      "body_lg": "text-lg leading-relaxed font-light",
+      "body": "text-base leading-relaxed font-light",
+      "label": "text-xs uppercase tracking-[0.2em] font-medium text-brand-secondary"
+    }
+  },
+  "spacing_and_layout": {
+    "grid_system": "Bento Grid Mode A (Asymmetrical & Artistic) for Marketing/Home sections, strict dense grids for Shop/Cart pages",
+    "container_padding": "p-6 md:p-12 lg:p-20",
+    "card_padding": "p-6 lg:p-8",
+    "gap_strategy": "Wide (gap-8 to gap-12) for home page layouts, Tight (gap-4) for product grids",
+    "radius": "rounded-none or rounded-sm (max 4px) to maintain a sharp, high-end editorial feel"
+  },
+  "surface_strategies": {
+    "headers": "Crystal Glassmorphism (backdrop-blur-xl bg-[#FAF9F6]/80 border-b border-[#E5DCD3]/50) for fixed navs",
+    "cards": "Flat Background with 1px delicate border (border-[#E5DCD3]). On hover: subtle float (-translate-y-1) and shadow-xl shadow-[#6B1724]/5",
+    "buttons": "Primary: Solid Maroon (#6B1724) with white text, no border radius. Hover: bg-[#800000]. Secondary: Transparent with 1px border (#6B1724) and maroon text."
+  },
+  "component_instructions": {
+    "navigation": "Sticky nav with logo centered, links flanking. Transparent glass effect. Must include Wishlist, Cart, Profile, Search icons.",
+    "hero_section": "Full viewport height or max 80vh. Use a high-quality fashion image with a subtle left-aligned text overlay (gradient overlay from-black/40 via-transparent to-transparent).",
+    "product_cards": "Aspect ratio 3:4 or 4:5 for images. Minimal text below: Title (body font), Price (bold), subtle 'Add to Cart' appearing on hover. No heavy borders.",
+    "cart_checkout": "Clean, distraction-free layout. 2-column on desktop. Use Shadcn components for forms, inputs, selects, but style them with square corners and beige/maroon focus rings.",
+    "admin_dashboard": "Use tight grids. Neutral backgrounds. Clear typographic hierarchy. Keep charts minimal with Recharts."
+  },
+  "media": {
+    "hero_banners": [
+      {
+        "url": "https://images.unsplash.com/photo-1756483509164-e9e652cb51bb?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTJ8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBpbmRpYW4lMjBldGhuaWMlMjBmYXNoaW9ufGVufDB8fHx8MTc3NjA3MDM0OHww&ixlib=rb-4.1.0&q=85",
+        "description": "Woman in golden dress - Perfect for Hero Banner"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1756483509177-bbabd67a3234?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTJ8MHwxfHNlYXJjaHwyfHxsdXh1cnklMjBpbmRpYW4lMjBldGhuaWMlMjBmYXNoaW9ufGVufDB8fHx8MTc3NjA3MDM0OHww&ixlib=rb-4.1.0&q=85",
+        "description": "Woman in elegant green ruffled sari with gold trim - Great for alternate hero or collection banner"
+      }
+    ],
+    "collections": [
+      {
+        "url": "https://images.unsplash.com/photo-1768651925875-d1523ed07cb6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzN8MHwxfHNlYXJjaHw0fHxpbmRpYW4lMjB3b21hbiUyMGV0aG5pYyUyMHdlYXJ8ZW58MHx8fHwxNzc2MDcwMzMzfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Floral print tunic and pants - Kurtis Collection"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1756483510859-c0ab4c45782c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTJ8MHwxfHNlYXJjaHwzfHxsdXh1cnklMjBpbmRpYW4lMjBldGhuaWMlMjBmYXNoaW9ufGVufDB8fHx8MTc3NjA3MDM0OHww&ixlib=rb-4.1.0&q=85",
+        "description": "Pink outfit with cape - Festive Collection"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1768803968260-3dab844c1476?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzN8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjB3b21hbiUyMGV0aG5pYyUyMHdlYXJ8ZW58MHx8fHwxNzc2MDcwMzMzfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Smiling woman in patterned jumpsuit - Co-ord Sets"
+      }
+    ],
+    "textures_and_backgrounds": [
+      {
+        "url": "https://images.unsplash.com/photo-1718653159704-dbe7e2a99b36?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHwxfHxtYXJvb24lMjBnb2xkJTIwZmFicmljJTIwdGV4dHVyZXxlbnwwfHx8fDE3NzYwNzAzNDh8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Red and yellow floral pattern - Use for subtle banner backgrounds or mega menu backdrops"
+      }
+    ]
+  },
+  "motion_and_interactions": {
+    "hover_states": "Images slightly scale up (scale-105) inside a hidden-overflow container on hover. Buttons show a smooth background color transition.",
+    "page_load": "Fade up elements staggered by 100ms. Use framer-motion for smooth entrance.",
+    "scroll": "Implement Lenis for smooth scrolling (momentum scrolling). Let parallax slightly offset hero text vs background image."
+  },
+  "icons": {
+    "library": "lucide-react for UI icons (clean, stroke-based), minimal usage. Rely more on typography and imagery.",
+    "weight": "Thin or Light stroke to match the premium editorial feel (stroke-width: 1.5 or 1)."
+  },
+  "testing": {
+    "data_testid_rules": "All interactive elements MUST have data-testid. Format: kebab-case, role-based. e.g., 'add-to-cart-button', 'main-nav-link-shop'."
+  }
+}
