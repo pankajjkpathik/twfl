@@ -282,7 +282,7 @@ async def forgot_password(req: ForgotPasswordRequest):
         "used": False
     })
     
-    reset_link = f"http://localhost:3000/reset-password?token={token}"
+    reset_link = f"{os.environ.get('FRONTEND_URL', 'http://localhost:3000')}/reset-password?token={token}"
     logger.info(f"Password reset link: {reset_link}")
     return {"message": "If the email exists, a reset link will be sent"}
 
@@ -374,10 +374,14 @@ async def get_cart(user: dict = Depends(get_current_user)):
     if not cart:
         return {"items": [], "total": 0}
     
+    product_ids = [item["product_id"] for item in cart.get("items", [])]
+    products_list = await db.products.find({"id": {"$in": product_ids}}, {"_id": 0}).to_list(len(product_ids))
+    products_map = {p["id"]: p for p in products_list}
+    
     items_with_details = []
     total = 0
     for item in cart.get("items", []):
-        product = await db.products.find_one({"id": item["product_id"]}, {"_id": 0})
+        product = products_map.get(item["product_id"])
         if product:
             price = product.get("discount_price") or product["price"]
             item_total = price * item["quantity"]
@@ -427,11 +431,9 @@ async def clear_cart(user: dict = Depends(get_current_user)):
 async def get_wishlist(user: dict = Depends(get_current_user)):
     user_doc = await db.users.find_one({"_id": ObjectId(user["_id"])})
     wishlist_ids = user_doc.get("wishlist", [])
-    products = []
-    for product_id in wishlist_ids:
-        product = await db.products.find_one({"id": product_id}, {"_id": 0})
-        if product:
-            products.append(product)
+    if not wishlist_ids:
+        return {"products": []}
+    products = await db.products.find({"id": {"$in": wishlist_ids}}, {"_id": 0}).to_list(len(wishlist_ids))
     return {"products": products}
 
 @api_router.post("/wishlist/add/{product_id}")
@@ -541,11 +543,15 @@ async def verify_payment(request: Request, user: dict = Depends(get_current_user
 @api_router.get("/orders")
 async def get_orders(user: dict = Depends(get_current_user)):
     orders = await db.orders.find({"user_id": user["_id"]}, {"_id": 0}).sort("created_at", -1).to_list(100)
-    for order in orders:
-        for item in order.get("items", []):
-            product = await db.products.find_one({"id": item["product_id"]}, {"_id": 0, "id": 1, "name": 1, "images": 1})
-            if product:
-                item["product"] = product
+    all_product_ids = list(set(item["product_id"] for order in orders for item in order.get("items", [])))
+    if all_product_ids:
+        products_list = await db.products.find({"id": {"$in": all_product_ids}}, {"_id": 0, "id": 1, "name": 1, "images": 1}).to_list(len(all_product_ids))
+        products_map = {p["id"]: p for p in products_list}
+        for order in orders:
+            for item in order.get("items", []):
+                product = products_map.get(item["product_id"])
+                if product:
+                    item["product"] = product
     return {"orders": orders}
 
 @api_router.get("/orders/{order_id}")
@@ -554,10 +560,14 @@ async def get_order(order_id: str, user: dict = Depends(get_current_user)):
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     
-    for item in order.get("items", []):
-        product = await db.products.find_one({"id": item["product_id"]}, {"_id": 0})
-        if product:
-            item["product"] = product
+    product_ids = [item["product_id"] for item in order.get("items", [])]
+    if product_ids:
+        products_list = await db.products.find({"id": {"$in": product_ids}}, {"_id": 0}).to_list(len(product_ids))
+        products_map = {p["id"]: p for p in products_list}
+        for item in order.get("items", []):
+            product = products_map.get(item["product_id"])
+            if product:
+                item["product"] = product
     
     shipping_address = await db.addresses.find_one({"id": order["shipping_address_id"]}, {"_id": 0})
     billing_address = await db.addresses.find_one({"id": order["billing_address_id"]}, {"_id": 0})
@@ -570,10 +580,11 @@ async def get_order(order_id: str, user: dict = Depends(get_current_user)):
 @api_router.get("/admin/dashboard/stats")
 async def get_dashboard_stats(admin: dict = Depends(get_current_admin)):
     total_orders = await db.orders.count_documents({})
-    total_revenue = 0
-    orders = await db.orders.find({"payment_status": PaymentStatus.COMPLETED}, {"_id": 0, "total_amount": 1}).to_list(10000)
-    for order in orders:
-        total_revenue += order.get("total_amount", 0)
+    revenue_result = await db.orders.aggregate([
+        {"$match": {"payment_status": PaymentStatus.COMPLETED}},
+        {"$group": {"_id": None, "total_revenue": {"$sum": "$total_amount"}}}
+    ]).to_list(1)
+    total_revenue = revenue_result[0]["total_revenue"] if revenue_result else 0
     
     total_products = await db.products.count_documents({})
     total_users = await db.users.count_documents({"role": UserRole.USER})
