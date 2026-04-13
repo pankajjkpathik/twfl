@@ -209,8 +209,8 @@ async def register(req: RegisterRequest):
     refresh_token = create_refresh_token(user_id)
     
     response = JSONResponse(content={"user": {"_id": user_id, "email": email, "name": req.name, "role": UserRole.USER}})
-    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=False, samesite="lax", max_age=900, path="/")
-    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=False, samesite="lax", max_age=604800, path="/")
+    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="none", max_age=900, path="/")
+    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
     return response
 
 @api_router.post("/auth/login")
@@ -229,8 +229,8 @@ async def login(req: LoginRequest):
     
     user_data = {"_id": user_id, "email": user["email"], "name": user["name"], "role": user.get("role", UserRole.USER)}
     response = JSONResponse(content={"user": user_data})
-    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=False, samesite="lax", max_age=900, path="/")
-    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=False, samesite="lax", max_age=604800, path="/")
+    response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="none", max_age=900, path="/")
+    response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
     return response
 
 @api_router.post("/auth/logout")
@@ -260,7 +260,7 @@ async def refresh_token(request: Request):
         user_id = str(user["_id"])
         new_access_token = create_access_token(user_id, user["email"])
         response = JSONResponse(content={"message": "Token refreshed"})
-        response.set_cookie(key="access_token", value=new_access_token, httponly=True, secure=False, samesite="lax", max_age=900, path="/")
+        response.set_cookie(key="access_token", value=new_access_token, httponly=True, secure=True, samesite="none", max_age=900, path="/")
         return response
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Refresh token expired")
@@ -346,13 +346,6 @@ async def get_products(
     
     return {"products": products, "total": total, "page": page, "pages": (total + limit - 1) // limit}
 
-@api_router.get("/products/{product_id}")
-async def get_product(product_id: str):
-    product = await db.products.find_one({"id": product_id}, {"_id": 0})
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product
-
 @api_router.get("/products/featured/list")
 async def get_featured_products():
     products = await db.products.find({"featured": True}, {"_id": 0}).limit(8).to_list(8)
@@ -362,6 +355,13 @@ async def get_featured_products():
 async def get_new_arrivals():
     products = await db.products.find({"is_new": True}, {"_id": 0}).limit(8).to_list(8)
     return {"products": products}
+
+@api_router.get("/products/{product_id}")
+async def get_product(product_id: str):
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
 
 @api_router.get("/categories")
 async def get_categories():
@@ -679,10 +679,11 @@ async def validate_coupon(code: str, total_amount: float, user: dict = Depends(g
 
 app.include_router(api_router)
 
+allowed_origins = os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(',')
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=allowed_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
